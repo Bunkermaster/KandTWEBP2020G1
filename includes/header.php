@@ -1,3 +1,6 @@
+<?php
+require_once "functions.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,9 +17,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">Teletubbies</a></li>
-                <li><a href="kittens.html">Kittens</a></li>
-                <li><a href="ironmaiden.html">Iron Maiden</a></li>
+                <?php addActive('index.php', 'Teletubbies')?>
+                <?php addActive('kittens.php', 'Chatonse')?>
+                <?php addActive('ironmaiden.php', 'Iron Maidennnnn')?>
             </ul>
         </div>
     </div>
