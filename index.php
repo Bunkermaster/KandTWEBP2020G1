@@ -2,13 +2,26 @@
 include "includes/header.php";
 require_once "includes/content.php";
 // definition de la page par defaut
+define('APP_DEFAUT_PAGE', 'teletubbies');
+define('APP_PAGE_PARAM', 'p');
 // est-ce que j'ai le parametre p dans l'url? (isset)
+if (isset($_GET[APP_PAGE_PARAM])) {
     // si oui, affectation de p dans $currentPage
-    // si non, j'affiche la page par defaut
+    $currentPage = $_GET[APP_PAGE_PARAM];
+} else {
+    // si non, affectation de la page par defaut dans $currentPage
+    $currentPage = APP_DEFAUT_PAGE;
+}
 // est-ce que ce $currentPage pointe vers une page qui existe?
+if (isset($content[$_GET[APP_PAGE_PARAM]])) {
     // si oui, j'affiche la page
+    $page = &$content[$_GET[APP_PAGE_PARAM]];
+} else {
     // si non, response code 404 et affichage de la page par defaut
-$page = $content[$_GET['p'] ?? 'teletubbies'];
+    http_response_code(404);
+    $currentPage = APP_DEFAUT_PAGE;
+    $page = &$content[$currentPage];
+}
 ?>
     <div class="container theme-showcase" role="main">
         <div class="jumbotron">
