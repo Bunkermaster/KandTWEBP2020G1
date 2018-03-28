@@ -67,6 +67,7 @@ function getPage(PDO $pdo, string $slug): ?array
     $stmt->bindParam(':slug',$slug, PDO::PARAM_STR);
 //    $stmt->execute(['slug' => $slug]);// crap version
     $stmt->execute();
+    pdoErrorHandler($stmt);
     if (false === $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
         return null;
@@ -84,15 +85,13 @@ function getNav(PDO $pdo): array
 {
     $sql = "SELECT 
               `slug`, 
-              `nav-title` 
+              `nav-title`, 
             FROM 
               `page`
             ;";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
-    if ($stmt->errorCode() !== '00000') {
-        throw new PDOException($stmt->errorInfo()[1]);
-    }
+    pdoErrorHandler($stmt);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -141,4 +140,16 @@ function getFooter(): void
 </body>
 </html>
 <?php
+}
+
+/**
+ * @param PDOStatement $stmt
+ *
+ * @return void
+ */
+function pdoErrorHandler(PDOStatement $stmt): void
+{
+    if ($stmt->errorCode() !== '00000') {
+        throw new PDOException($stmt->errorInfo()[2]);
+    }
 }
