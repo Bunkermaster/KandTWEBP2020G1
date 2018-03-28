@@ -5,15 +5,21 @@
  * Date: 28/02/2018
  * Time: 16:54
  */
-
-function addActive($page, $text)
+/**
+ * @param string $slug
+ * @param string $navTitle
+ * @return void
+ */
+function addActive(string $slug, string $navTitle, string $currentPage): void
 {
     $activeClass = '';
-    if($page === basename($_SERVER['PHP_SELF'])){
+    if($slug === $currentPage){
         $activeClass = ' class="active"';
     }
 ?>
-    <li<?=$activeClass?>><a href="<?=$page?>"><?=$text?></a></li>
+    <li<?=$activeClass?>>
+        <a href="<?=sprintf("%s%s=%s", APP_URL_STRUCT, APP_PAGE_PARAM, $slug)?>"><?=$navTitle?></a>
+    </li>
 <?php
 }
 
@@ -70,11 +76,34 @@ function getPage(PDO $pdo, string $slug): ?array
 }
 
 /**
+ * @param PDO $pdo
  *
+ * @return array
  */
-function getHeader(): void
+function getNav(PDO $pdo): array
 {
-?>
+    $sql = "SELECT 
+              `slug`, 
+              `nav-title` 
+            FROM 
+              `page`
+            ;";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    if ($stmt->errorCode() !== '00000') {
+        throw new PDOException($stmt->errorInfo()[1]);
+    }
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * @param $pdo
+ * @param $currentPage
+ */
+function getHeader($pdo, $currentPage): void
+{
+    $navData = getNav($pdo);
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,18 +114,20 @@ function getHeader(): void
 </head>
 <body role="document">
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">WtfWeb</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <?php addActive('index.php', 'Teletubbies')?>
-                <?php addActive('kittens.php', 'Chatonse')?>
-                <?php addActive('ironmaiden.php', 'Iron Maidennnnn')?>
-            </ul>
-        </div>
-    </div>
+<div class="container">
+<div class="navbar-header">
+    <a class="navbar-brand" href="<?=APP_URL_STRUCT?>">WTF-CMS</a>
+</div>
+<div id="navbar" class="navbar-collapse collapse">
+<ul class="nav navbar-nav">
+<?php
+    foreach ($navData as $onePage){
+        addActive($onePage['slug'], $onePage['nav-title'], $currentPage);
+    }
+?>
+</ul>
+</div>
+</div>
 </nav>
 <?php
 }

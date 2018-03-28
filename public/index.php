@@ -5,6 +5,7 @@ require_once APP_ROOT_DIR."includes/functions.php";
 // definition de la page par defaut
 define('APP_DEFAUT_PAGE', 'teletubbies');
 define('APP_PAGE_PARAM', 'p');
+define('APP_URL_STRUCT', 'index.php?');
 // est-ce que j'ai le parametre p dans l'url? (isset)
 $currentPage = $_GET[APP_PAGE_PARAM] ?? APP_DEFAUT_PAGE;
 $page = getPage($pdo, $currentPage);
@@ -15,6 +16,6 @@ if (is_null($page)) {
     $currentPage = APP_DEFAUT_PAGE;
     $page = getPage($pdo, $currentPage);
 }
-getHeader();
+getHeader($pdo, $currentPage);
 displayPage($page);
 getFooter();
