@@ -85,7 +85,7 @@ function getNav(PDO $pdo): array
 {
     $sql = "SELECT 
               `slug`, 
-              `nav-title`, 
+              `nav-title` 
             FROM 
               `page`
             ;";
@@ -151,5 +151,38 @@ function pdoErrorHandler(PDOStatement $stmt): void
 {
     if ($stmt->errorCode() !== '00000') {
         throw new PDOException($stmt->errorInfo()[2]);
+    }
+}
+
+function adminHeader()
+{
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div style="width: 800px; margin: auto; padding: 10px; border-left: 1px solid #000; border-right: 1px solid #000;">
+<?php
+}
+
+function adminFooter()
+{
+?>
+    </div>
+</body>
+</html>
+<?php
+}
+
+function errorHandler(PDOStatement $stmt) : void
+{
+    if ($stmt->errorCode() !== '00000') {
+        throw new Exception($stmt->errorInfo()[1]);
     }
 }
